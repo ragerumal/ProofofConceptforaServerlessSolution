@@ -49,6 +49,7 @@ The architecture is composed of the following components:
 #### Create IAM Policies
 
 - **Lambda-Write-DynamoDB**
+  
   ```json
   {
     "Version": "2012-10-17",
@@ -120,7 +121,7 @@ The architecture is composed of the following components:
 }
 ```
 
-# Step 1.2: Creating IAM Roles and Attaching Policies
+### Step 1.2: Creating IAM Roles and Attaching Policies
 
 To follow the principle of least privilege, AWS recommends providing role-based access to only the resources required to perform a specific task. In this step, you'll create IAM roles and attach policies to these roles.
 
