@@ -2,7 +2,8 @@
 
 Customer wants to ingest orders through a portal and requests via REST api calls, and then get a success message on thier UI. Later in the backend application needs to store the order and process it to further downstream systems for other teams or systems to consume and act upon.
 
-<img width="643" alt="image" src="https://github.com/user-attachments/assets/bdd531c8-345b-42eb-a136-e8acf3853485">
+
+![ServerlessSolution](https://github.com/user-attachments/assets/8f0660b8-06ad-45f4-8007-1aef6ab2fe98)
 
 
 - API Gateway : Since customer needed scalable and operationally less dependent. And existing implementation of thier application is built on REST protocol, so had to choose API gateway. Also for the Sale day and hight traffic day API gateway was best for the scalability reason.
