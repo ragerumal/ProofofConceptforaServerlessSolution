@@ -1,5 +1,9 @@
 # ProofofConceptforaServerlessSolution
 
+Customer wants to ingest orders through a portal and requests via REST api calls, and then get a success message on thier UI. Later in the backend application needs to store the order and process it to further downstream systems for other teams or systems to consume and act upon.
+
+<img width="643" alt="image" src="https://github.com/user-attachments/assets/bdd531c8-345b-42eb-a136-e8acf3853485">
+
 # Serverless Architecture with AWS: API Gateway, Lambda, SQS, DynamoDB, and SNS
 
 This README provides detailed instructions on setting up a serverless architecture using AWS services. The architecture involves an API Gateway, SQS, Lambda functions, DynamoDB, and SNS for handling data processing and notifications.
@@ -10,15 +14,16 @@ This README provides detailed instructions on setting up a serverless architectu
 - [Prerequisites](#prerequisites)
 - [Setup Instructions](#setup-instructions)
   - [Step 1: Create IAM Policies and Roles](#step-1-create-iam-policies-and-roles)
-  - [Step 2: Create DynamoDB Table](#step-2-create-dynamodb-table)
+  - [Step 2: Creating a DynamoDB Table](#step-2-create-dynamodb-table)
   - [Step 3: Create SQS Queue](#step-3-create-sqs-queue)
   - [Step 4: Create and Configure Lambda Functions](#step-4-create-and-configure-lambda-functions)
   - [Step 5: Enable DynamoDB Streams](#step-5-enable-dynamodb-streams)
   - [Step 6: Create SNS Topic and Subscription](#step-6-create-sns-topic-and-subscription)
-  - [Step 7: Create REST API with API Gateway](#step-7-create-rest-api-with-api-gateway)
-  - [Step 8: Test the Architecture](#step-8-test-the-architecture)
-  - [Step 9: Cleanup Resources](#step-9-cleanup-resources)
-- [License](#license)
+  - [Step 7: Creating an AWS Lambda Function to Publish a Message to the SNS Topic](#step-7-Creating-an-AWS-Lambda-Function-to-Publish-a-Message-to-the-SNS-Topic)
+  - [Step 8: Create REST API with API Gateway](#step-7-create-rest-api-with-api-gateway)
+  - [Step 9: Test the Architecture](#step-8-test-the-architecture)
+  - [Step 10: Cleanup Resources](#step-9-cleanup-resources)
+
 
 ## Architecture Overview
 
@@ -154,7 +159,7 @@ To follow the principle of least privilege, AWS recommends providing role-based 
      - **Attach policies:** 
        - `AmazonAPIGatewayPushToCloudWatchLogs`
 
-# Task 2: Creating a DynamoDB Table
+### Step 2: Creating a DynamoDB Table
 
 In this task, you will create a DynamoDB table to ingest data passed through API Gateway.
 
@@ -176,7 +181,7 @@ In this task, you will create a DynamoDB table to ingest data passed through API
    - Click **Create table** to finalize the creation of the DynamoDB table.
 
 
-# Task 3: Creating an SQS Queue
+### Step 3: Creating an SQS Queue
 
 In this task, you will create an Amazon SQS queue. This queue will receive data records from API Gateway, store them, and send them to a database.
 
@@ -207,3 +212,76 @@ In this task, you will create an Amazon SQS queue. This queue will receive data 
 5. **Complete the Queue Creation:**
    - Click **Create queue** to finalize the creation of the SQS queue.
 
+### Step 4: Creating a Lambda Function and Setting Up Triggers
+
+1. **Create a Lambda Function:**
+   - Go to the AWS Management Console and open the Lambda service.
+   - Choose "Create function" and configure the following:
+     - **Function name:** `POC-Lambda-1`
+     - **Runtime:** Python 3.9
+     - **Execution role:** Use the existing role `Lambda-SQS-DynamoDB`.
+
+2. **Set Up SQS as a Trigger:**
+   - Add SQS as a trigger for the Lambda function.
+   - Choose `POC-Queue` as the SQS queue.
+
+3. **Deploy the Lambda Function Code:**
+   - Replace the default code with the provided Python code that reads from SQS and writes to DynamoDB.
+   - Deploy the code.
+
+4. **Test the Lambda Function:**
+   - Create a test event in the Lambda console using the SQS template.
+   - Verify the test message "Hello from SQS!" is written to the DynamoDB table.
+
+### Step 5: Enabling DynamoDB Streams
+
+1. **Enable DynamoDB Streams:**
+   - In the DynamoDB console, enable streams for the `orders` table.
+   - Set the view type to "New image."
+
+### Step 6: Creating an SNS Topic and Setting Up Subscriptions
+
+1. **Create an SNS Topic:**
+   - Open the SNS service in the AWS Management Console.
+   - Create a new topic named `POC-Topic` and save its ARN.
+
+2. **Subscribe to Email Notifications:**
+   - Create a subscription for the `POC-Topic` using the email protocol.
+   - Confirm the subscription via the email sent to your inbox.
+
+### Step 7: Creating an AWS Lambda Function to Publish a Message to the SNS Topic
+
+1. **Create a Second Lambda Function:**
+   - Create a Lambda function named `POC-Lambda-2` using the existing role `Lambda-DynamoDBStreams-SNS`.
+
+2. **Set Up DynamoDB as a Trigger:**
+   - Add the `orders` table as a trigger for the new Lambda function.
+
+3. **Configure the Lambda Function:**
+   - Replace the default code with the provided Python code that publishes a message to SNS.
+   - Deploy the code.
+
+4. **Test the Lambda Function:**
+   - Test the function with a DynamoDB event, and verify that you receive an email notification.
+
+### Step 8: Creating an API with Amazon API Gateway
+
+1. **Create a REST API:**
+   - Open API Gateway and create a new REST API named `POC-API`.
+
+2. **Configure the API:**
+   - Create a POST method and integrate it with the SQS service to send messages to `POC-Queue`.
+
+3. **Add Mapping Templates:**
+   - Configure the API to map the request body and headers correctly for SQS.
+
+### Step 9: Testing the Architecture by Using API Gateway
+
+1. **Test the API:**
+   - Use API Gateway's test feature to send a mock request.
+   - Verify that the request is processed through SQS, Lambda, DynamoDB, and SNS.
+
+### Step 10: Cleaning Up
+
+1. **Delete AWS Resources:**
+   - Delete the DynamoDB table, Lambda functions, SQS queue, SNS topic, API Gateway, and associated IAM roles and policies.
