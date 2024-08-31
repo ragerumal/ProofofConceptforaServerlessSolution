@@ -4,6 +4,15 @@ Customer wants to ingest orders through a portal and requests via REST api calls
 
 <img width="643" alt="image" src="https://github.com/user-attachments/assets/bdd531c8-345b-42eb-a136-e8acf3853485">
 
+
+- API Gateway : Since customer needed scalable and operationally less dependent. And existing implementation of thier application is built on REST protocol, so had to choose API gateway. Also for the Sale day and hight traffic day API gateway was best for the scalability reason.
+- SQS - Amazon SQS is used in this architecture to decouple the backend business logic to store process , customers dont need to wait for that to happen. So Api gateway can return success to customer once the order is accepted. And SQS can hold messages up to 14 days based on the configuration.
+- AWS Lambda - Customers wanted pay as you use compute model and didnt want to manage servers, so AWS lambda was choosen here to support this requirement.
+- Amazon Dynamo DB - Since one of customer feedback on the data type for order was just simple and non relational for further systems or business logic needed. So adding Dynamo DB also helps during the Peak traffic , sales event to accept DB updates with milliseconds throughput.
+- DynamoDBstreams - This was needed to setup Bridge between store Orders and downstream systems for processing newly added orders.
+- AWS Lambda & SNS - Amazon Lambda & Amazon SNS is added between DynamoDB streams and downstream systems , Lambda would read the dynamoDB streams for newly added orders and publish messsge to SNS topic. And later SNS topic notifies the Downstream systems or email/sms .
+  
+
 # Serverless Architecture with AWS: API Gateway, Lambda, SQS, DynamoDB, and SNS
 
 This README provides detailed instructions on setting up a serverless architecture using AWS services. The architecture involves an API Gateway, SQS, Lambda functions, DynamoDB, and SNS for handling data processing and notifications.
