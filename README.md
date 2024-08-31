@@ -1,6 +1,8 @@
-# ProofofConceptforaServerlessSolution
+# Serverless Architecture with AWS: API Gateway, Lambda, SQS, DynamoDB, and SNS
 
-Customer wants to ingest orders through a portal and requests via REST api calls, and then get a success message on thier UI. Later in the backend application needs to store the order and process it to further downstream systems for other teams or systems to consume and act upon.
+This README provides detailed instructions on setting up a serverless architecture using AWS services. The architecture involves an API Gateway, SQS, Lambda functions, DynamoDB, and SNS for handling data processing and notifications.
+
+In this example, Customer wants to ingest orders through a portal and requests are served via REST api calls. Later in the backend application, need to store the order details and process it to further downstream systems to consume and act upon.
 
 
 ![ServerlessSolution](https://github.com/user-attachments/assets/8f0660b8-06ad-45f4-8007-1aef6ab2fe98)
@@ -14,9 +16,7 @@ Customer wants to ingest orders through a portal and requests via REST api calls
 - AWS Lambda & SNS - Amazon Lambda & Amazon SNS is added between DynamoDB streams and downstream systems , Lambda would read the dynamoDB streams for newly added orders and publish messsge to SNS topic. And later SNS topic notifies the Downstream systems or email/sms .
   
 
-# Serverless Architecture with AWS: API Gateway, Lambda, SQS, DynamoDB, and SNS
 
-This README provides detailed instructions on setting up a serverless architecture using AWS services. The architecture involves an API Gateway, SQS, Lambda functions, DynamoDB, and SNS for handling data processing and notifications.
 
 ## Table of Contents
 
